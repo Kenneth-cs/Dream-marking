@@ -31,16 +31,14 @@
     </view>
     
     <!-- 文本输入区域 -->
-    <block wx:if="{{showInput}}">
-      <view class="input-container">
-        <textarea 
-          class="prompt-input"
-          placeholder="请输入图片描述..."
-          value="{{prompt}}"
-          bindinput="onInputChange"
-        ></textarea>
-      </view>
-    </block>
+    <view class="input-container" wx:if="{{showInput}}">
+      <textarea 
+        class="prompt-input"
+        placeholder="请输入你想生成的图片..."
+        value="{{prompt}}"
+        bindinput="onInputChange"
+      ></textarea>
+    </view>
     
     <!-- 生成按钮 -->
     <view class="button-container">
@@ -49,6 +47,36 @@
         bindtap="onGenerateImage"
         loading="{{isLoading}}"
       >{{isRandomMode ? '点击随机抽取卡片' : '生成图片'}}</button>
+    </view>
+
+    <!-- 使用提示 -->
+    <view class="tips-container">
+      <view class="tips-title">💡 使用提示</view>
+      <view class="tips-item">• 点击图片可预览，长按可保存到相册</view>
+      <view class="tips-item">• 输入详细的描述，生成效果更好</view>
+      <view class="tips-item">• 每次生成需要等待几秒钟</view>
+    </view>
+
+    <!-- 功能说明区域 - 为智能广告提供更多内容区块 -->
+    <view class="feature-section">
+      <view class="feature-title">功能特色</view>
+      <view class="feature-list">
+        <view class="feature-card">
+          <text class="feature-icon">✨</text>
+          <text class="feature-name">智能生成</text>
+          <text class="feature-desc">描述你的想法，即梦为你创造</text>
+        </view>
+        <view class="feature-card">
+          <text class="feature-icon">🎴</text>
+          <text class="feature-name">随机抽卡</text>
+          <text class="feature-desc">每次都是惊喜</text>
+        </view>
+        <view class="feature-card">
+          <text class="feature-icon">💾</text>
+          <text class="feature-name">一键保存</text>
+          <text class="feature-desc">轻松保存到相册</text>
+        </view>
+      </view>
     </view>
   </view>
 </scroll-view>

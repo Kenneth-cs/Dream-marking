@@ -1,10 +1,31 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/about/about"
   ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#7B4397",
+    "backgroundColor": "#000000",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "icons/home.png",
+        "selectedIconPath": "icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/about/about",
+        "text": "关于",
+        "iconPath": "icons/about.png",
+        "selectedIconPath": "icons/about-active.png"
+      }
+    ]
   },
   "style": "v2",
   "renderer": "webview",

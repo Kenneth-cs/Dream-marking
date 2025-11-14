@@ -16,6 +16,39 @@ Page({
 
   onLoad() {
     this.checkWorkflowStatus();
+    // 暂时注释，等获取正确的广告位ID后再启用
+    // this.initInterstitialAd();
+  },
+
+  // 初始化插屏广告
+  initInterstitialAd() {
+    // 创建插屏广告实例
+    if (wx.createInterstitialAd) {
+      this.interstitialAd = wx.createInterstitialAd({
+        adUnitId: 'adunit-xxxxxxxxxxxxxxxx' // 替换为你的插屏广告位ID
+      });
+
+      this.interstitialAd.onLoad(() => {
+        console.log('插屏广告加载成功');
+      });
+
+      this.interstitialAd.onError((err) => {
+        console.error('插屏广告加载失败', err);
+      });
+
+      this.interstitialAd.onClose(() => {
+        console.log('插屏广告关闭');
+      });
+    }
+  },
+
+  // 显示插屏广告
+  showInterstitialAd() {
+    if (this.interstitialAd) {
+      this.interstitialAd.show().catch((err) => {
+        console.error('插屏广告显示失败', err);
+      });
+    }
   },
 
   // 检查工作流状态
@@ -45,7 +78,7 @@ Page({
           isRandomMode: false,
           placeholderImage: '../../assets/placeholder.png',
           isInitializing: false,
-          showResponse: true
+          showResponse: false // 初始不显示文本框，等生成成功后再显示
         });
         console.log('初始化完成 - 默认模式');
       }
@@ -62,7 +95,7 @@ Page({
         showInput: true,
         isRandomMode: false,
         isInitializing: false,
-        showResponse: true
+        showResponse: false // 初始不显示文本框
       });
     }
   },
@@ -207,6 +240,15 @@ Page({
               wenan,
               showResponse: true
             });
+            
+            // 生成成功后显示插屏广告（每3次显示一次，避免过于频繁）
+            if (!this.adCounter) this.adCounter = 0;
+            this.adCounter++;
+            if (this.adCounter % 3 === 0) {
+              setTimeout(() => {
+                this.showInterstitialAd();
+              }, 1000);
+            }
           } else {
             console.error('[未找到图片URL] 响应数据结构:', responseData);
             throw new Error('响应中未找到图片URL，请检查API返回格式');
@@ -486,6 +528,15 @@ Page({
         icon: 'success',
         duration: 1500
       });
+
+      // 抽卡成功后显示插屏广告（每3次显示一次）
+      if (!this.adCounter) this.adCounter = 0;
+      this.adCounter++;
+      if (this.adCounter % 3 === 0) {
+        setTimeout(() => {
+          this.showInterstitialAd();
+        }, 2000);
+      }
     }, 800); // 800ms 的抽卡动画时间
   },
 
