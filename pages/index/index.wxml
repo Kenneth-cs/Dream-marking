@@ -1,0 +1,54 @@
+<!--index.wxml-->
+<navigation-bar title="即时造梦" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+
+<!-- 初始化loading -->
+<view wx:if="{{isInitializing}}" class="loading-container">
+  <view class="loading-text">正在火速打开中，请稍等...</view>
+</view>
+
+<!-- 主界面内容 -->
+<scroll-view wx:else class="scrollarea" scroll-y type="list">
+  <view class="container">
+    <!-- 图片预览区域 -->
+    <view class="image-container">
+      <image 
+        class="preview-image" 
+        src="{{imageUrl || placeholderImage}}"
+        mode="aspectFill"
+        bindtap="previewImage"
+        bindlongpress="saveImage"
+      ></image>
+      <!-- AI回复显示区域 -->
+      <scroll-view 
+        scroll-y 
+        class="response-area"
+        wx:if="{{!isRandomMode && showResponse}}"
+      >
+        <view class="wenan-container">
+          <text class="wenan-text">{{wenan}}</text>
+        </view>
+      </scroll-view>
+    </view>
+    
+    <!-- 文本输入区域 -->
+    <block wx:if="{{showInput}}">
+      <view class="input-container">
+        <textarea 
+          class="prompt-input"
+          placeholder="请输入图片描述..."
+          value="{{prompt}}"
+          bindinput="onInputChange"
+        ></textarea>
+      </view>
+    </block>
+    
+    <!-- 生成按钮 -->
+    <view class="button-container">
+      <button 
+        class="generate-button" 
+        bindtap="onGenerateImage"
+        loading="{{isLoading}}"
+      >{{isRandomMode ? '点击随机抽取卡片' : '生成图片'}}</button>
+    </view>
+  </view>
+</scroll-view>

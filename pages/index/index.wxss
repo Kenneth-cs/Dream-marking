@@ -1,0 +1,257 @@
+/**index.wxss**/
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #000000;
+  color: #ffffff;
+}
+.scrollarea {
+  flex: 1;
+  overflow-y: hidden;
+}
+
+.container {
+  padding: 24rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.image-container {
+  width: 100%;
+  padding-bottom: 20rpx;
+}
+
+.preview-image {
+  width: 702rpx;
+  height: 702rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+  background: rgba(44, 44, 44, 0.3);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.preview-image:active {
+  transform: scale(0.98);
+}
+
+
+/* AI回复区域样式 */
+.response-area {
+  width: 100%;
+  height: 240rpx;
+  margin: 24rpx 0;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20rpx;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wenan-container {
+  padding: 24rpx;
+}
+
+.wenan-text {
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.input-container {
+  width: 100%;
+  padding-bottom: 2rpx;
+}
+
+.prompt-input {
+  width: 100%;
+  height: 180rpx;
+  padding: 24rpx;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  line-height: 1.5;
+  color: #ffffff;
+}
+
+.button-container {
+  width: 100%;
+  padding: 24rpx 0;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+}
+
+.generate-button {
+  width: 80% !important;
+  height: 96rpx !important;
+  line-height: 96rpx !important;
+  background: linear-gradient(135deg, #7B4397, #DC2430) !important;
+  color: #fff !important;
+  font-size: 32rpx !important;
+  font-weight: 600 !important;
+  border-radius: 48rpx !important;
+  box-shadow: 0 8rpx 16rpx rgba(123, 67, 151, 0.3);
+  transition: all 0.3s ease;
+  border: none !important;
+}
+
+.generate-button:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 8rpx rgba(123, 67, 151, 0.2);
+}
+
+.generate-button[loading] {
+  opacity: 0.8;
+  background: linear-gradient(135deg, #7B4397, #DC2430) !important;
+}
+
+/* Loading 容器样式 */
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000000;
+  z-index: 1000;
+}
+
+.loading-text {
+  font-size: 32rpx;
+  color: #FF6B6B;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* 占位图样式 */
+.preview-image[src*="placeholder"] {
+  background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 适配夜间模式 */
+@media (prefers-color-scheme: dark) {
+  page {
+    background: linear-gradient(to bottom, #000000, #1a1a1a);
+  }
+}
+
+/* 星空容器 */
+.stars-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* 星星基础样式 */
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  animation: animateStars linear infinite;
+}
+
+/* 三层不同大小和速度的星星 */
+.stars1 {
+  background-image: 
+    radial-gradient(1px 1px at 25% 25%, white 1px, transparent 0),
+    radial-gradient(1px 1px at 50% 50%, white 1px, transparent 0),
+    radial-gradient(1px 1px at 75% 75%, white 1px, transparent 0),
+    radial-gradient(2px 2px at 100% 100%, white 1px, transparent 0);
+  background-size: 250px 250px;
+  animation-duration: 200s;
+}
+
+.stars2 {
+  background-image: 
+    radial-gradient(1px 1px at 10% 10%, white 1px, transparent 0),
+    radial-gradient(2px 2px at 30% 30%, white 1px, transparent 0),
+    radial-gradient(2px 2px at 60% 60%, white 1px, transparent 0),
+    radial-gradient(1px 1px at 90% 90%, white 1px, transparent 0);
+  background-size: 300px 300px;
+  animation-duration: 150s;
+}
+
+.stars3 {
+  background-image: 
+    radial-gradient(1px 1px at 15% 15%, white 1px, transparent 0),
+    radial-gradient(1px 1px at 35% 35%, white 1px, transparent 0),
+    radial-gradient(1px 1px at 55% 55%, white 1px, transparent 0),
+    radial-gradient(1px 1px at 85% 85%, white 1px, transparent 0);
+  background-size: 200px 200px;
+  animation-duration: 100s;
+}
+
+@keyframes animateStars {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+/* 添加流星效果 */
+@keyframes shootingStar {
+  0% {
+    transform: translate(0, 0) rotate(45deg);
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-2000rpx, 2000rpx) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.stars-container::after {
+  content: '';
+  position: absolute;
+  top: -100rpx;
+  right: -100rpx;
+  width: 100rpx;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #fff);
+  animation: shootingStar 5s linear infinite;
+  animation-delay: 2s;
+}
+
+.stars-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100rpx;
+  width: 80rpx;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #fff);
+  animation: shootingStar 4s linear infinite;
+}
