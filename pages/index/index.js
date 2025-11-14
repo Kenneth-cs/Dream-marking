@@ -21,18 +21,34 @@ Page({
   // 检查工作流状态
   async checkWorkflowStatus() {
     try {
-      // 简化初始化逻辑，直接设置为可用状态
-      console.log('初始化小程序状态...');
+      console.log('正在检查模式...');
       
-      this.setData({
-        showInput: true,
-        isRandomMode: false,
-        placeholderImage: '../../assets/placeholder.png',
-        isInitializing: false,
-        showResponse: true
-      });
+      // 调用模式检查工作流
+      const modeResult = await this.checkMode();
       
-      console.log('初始化完成');
+      console.log('模式检查结果:', modeResult);
+      
+      if (modeResult === 2) {
+        // 随机抽卡模式
+        this.setData({
+          showInput: false,
+          isRandomMode: true,
+          placeholderImage: '../../assets/placeholder.png',
+          isInitializing: false,
+          showResponse: false
+        });
+        console.log('初始化完成 - 随机抽卡模式');
+      } else {
+        // 默认模式（模式1或其他）
+        this.setData({
+          showInput: true,
+          isRandomMode: false,
+          placeholderImage: '../../assets/placeholder.png',
+          isInitializing: false,
+          showResponse: true
+        });
+        console.log('初始化完成 - 默认模式');
+      }
       
     } catch (error) {
       console.error('Check workflow status failed:', error);
@@ -41,13 +57,74 @@ Page({
         icon: 'none',
         duration: 3000
       });
-      // 发生错误时默认显示输入框
+      // 发生错误时默认使用模式1
       this.setData({
         showInput: true,
         isRandomMode: false,
         isInitializing: false,
         showResponse: true
       });
+    }
+  },
+
+  // 调用模式检查工作流
+  async checkMode() {
+    try {
+      const requestConfig = {
+        url: this.API_CONFIG.BASE_URL,
+        method: 'POST',
+        timeout: this.API_CONFIG.TIMEOUT,
+        header: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/plain, */*',
+          'Authorization': this.API_CONFIG.AUTH_TOKEN
+        },
+        data: {
+          workflow_id: this.API_CONFIG.MODE_CHECK_WORKFLOW_ID,
+          parameters: {},
+          app_id: this.API_CONFIG.APP_ID,
+          is_async: false
+        }
+      };
+
+      const result = await this.executeRequest(requestConfig);
+      
+      console.log('模式检查API响应:', result.data);
+      
+      // 解析返回结果
+      if (result.data?.msg === 'Success' || result.data?.code === 0) {
+        let responseData;
+        try {
+          if (typeof result.data.data === 'string') {
+            responseData = JSON.parse(result.data.data);
+          } else if (typeof result.data.data === 'object') {
+            responseData = result.data.data;
+          } else {
+            responseData = result.data;
+          }
+          
+          // 尝试多种可能的字段获取模式值
+          const mode = responseData.output || 
+                      responseData.mode || 
+                      responseData.result ||
+                      responseData.value ||
+                      1; // 默认返回1
+          
+          console.log('解析的模式值:', mode);
+          return parseInt(mode);
+          
+        } catch (parseError) {
+          console.error('解析模式结果失败:', parseError);
+          return 1; // 解析失败默认返回1
+        }
+      } else {
+        console.error('模式检查API返回错误:', result.data);
+        return 1; // API错误默认返回1
+      }
+      
+    } catch (error) {
+      console.error('模式检查请求失败:', error);
+      return 1; // 请求失败默认返回1
     }
   },
 
@@ -58,6 +135,12 @@ Page({
   },
 
   async onGenerateImage() {
+    // 如果是随机抽卡模式，直接显示随机图片
+    if (this.data.isRandomMode) {
+      this.showRandomCard();
+      return;
+    }
+
     // 检查请求间隔
     const now = Date.now();
     const timeSinceLastRequest = now - this.data.lastRequestTime;
@@ -185,6 +268,7 @@ Page({
   API_CONFIG: {
     BASE_URL: 'https://api.coze.cn/v1/workflow/run',
     WORKFLOW_ID: '7470173882880966656',
+    MODE_CHECK_WORKFLOW_ID: '7478165030510805011', // 新增：模式检查工作流ID
     APP_ID: 'wx154296746927e92f',
     AUTH_TOKEN: 'Bearer pat_55malWmAHkikuRy9hIFpPBrO9YVuouXLc9cUyMra2w321crH7KpjRDUcci5DTQyA',
     TIMEOUT: 30000, // 30秒超时
@@ -195,6 +279,14 @@ Page({
       SERVER_ERROR: 2000 // 服务器错误基础延迟
     }
   },
+
+  // 随机卡片图片列表
+  CARD_IMAGES: [
+    '../../assets/placeholder.png',
+    '../../assets/placeholder2.png',
+    '../../assets/placeholder3.png',
+    '../../assets/placeholder4.png',
+  ],
 
   // 创建请求配置
   createRequestConfig(input) {
@@ -363,6 +455,38 @@ Page({
       urls: [this.data.imageUrl],
       current: this.data.imageUrl
     });
+  },
+
+  // 显示随机卡片
+  showRandomCard() {
+    if (this.CARD_IMAGES.length === 0) {
+      wx.showToast({
+        title: '暂无卡片',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 添加抽卡动画效果
+    this.setData({ isLoading: true });
+
+    // 模拟抽卡动画延迟
+    setTimeout(() => {
+      const randomIndex = Math.floor(Math.random() * this.CARD_IMAGES.length);
+      const randomImage = this.CARD_IMAGES[randomIndex];
+      
+      this.setData({
+        imageUrl: randomImage,
+        isLoading: false
+      });
+
+      // 可选：添加抽卡成功提示
+      wx.showToast({
+        title: '抽卡成功！',
+        icon: 'success',
+        duration: 1500
+      });
+    }, 800); // 800ms 的抽卡动画时间
   },
 
   // 保存图片到相册
